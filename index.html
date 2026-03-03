@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Prácticas - Reloj Espejo</title>
+  <style>
+    :root{--bg:#f0f6ff;--card:#ffffff;--accent:#2b6ef6;--muted:#6b7280}
+    html,body{height:100%}
+    body{font-family:Segoe UI,Arial,Helvetica,sans-serif;margin:0;background:linear-gradient(180deg,var(--bg),#ffffff);color:#0f172a}
+    .wrap{max-width:820px;margin:40px auto;padding:20px}
+    h1{color:var(--accent);margin-bottom:8px}
+    label{display:block;margin:10px 0;font-size:14px}
+    input[type="text"], input[type="time"], input[type="number"], select{width:100%;max-width:360px;padding:8px;border:1px solid #d1d5db;border-radius:6px}
+    .panel{background:var(--card);box-shadow:0 6px 18px rgba(11,15,30,0.06);padding:14px;border-radius:8px;margin-top:12px}
+    pre{background:#f8fafc;padding:12px;border-radius:6px;overflow:auto}
+    #resultado{margin-top:12px;font-weight:700;color:#0b1220}
+    button{background:var(--accent);color:#fff;padding:8px 12px;border:none;border-radius:6px;cursor:pointer}
+    a{color:var(--accent)}
+    .meta{color:var(--muted);font-size:13px}
+  </style>
+</head>
+  <body>
+  <div class="wrap">
+  <h1>Formulario de Prácticas</h1>
+  <div class="meta">Formulario por defecto para: butron arcaya julio cesar — Diseño Web III</div>
+
+  <form id="mainForm" onsubmit="return false;">
+    <label>Nombre: <input id="nombre" type="text" value="butron arcaya julio cesar" /></label>
+    <label>Materia: <input id="materia" type="text" value="diseño web III" /></label>
+    <label>Curso: <input id="curso" type="text" value="3ro A" /></label>
+    <label>N° Lista: <input id="nlista" type="number" min="1" value="7" /></label>
+
+    <label>Práctica:
+      <select id="practica">
+        <option value="">-- Seleccionar --</option>
+        <option value="pract1">Práctica 1: Reloj espejo</option>
+      </select>
+    </label>
+
+    <div id="pract1Section" class="panel" style="display:none">
+      <h2>Práctica 1 — Reloj espejo</h2>
+      <label>Ingrese hora (formato HH:MM): <input id="hora" type="time" step="60" /></label>
+      <label>Lenguaje:
+        <select id="lenguaje">
+          <option value="java">Java</option>
+        </select>
+      </label>
+      <button id="calcular" type="button">Calcular hora reflejada</button>
+
+      <div id="resultado"></div>
+
+        <div id="codigoJava" style="display:none;margin-top:12px">
+        <h3>Código en Java</h3>
+        <p>Puedes descargar el archivo Java separado (vista previa ocultada):</p>
+        <a href="MirrorClock.java" download>Descargar MirrorClock.java</a>
+        </div>
+    </div>
+  </form>
+
+  <script>
+    const practica = document.getElementById('practica');
+    const pract1Section = document.getElementById('pract1Section');
+    const lenguaje = document.getElementById('lenguaje');
+    const codigoJava = document.getElementById('codigoJava');
+    const horaInput = document.getElementById('hora');
+    const resultado = document.getElementById('resultado');
+    const calcularBtn = document.getElementById('calcular');
+
+    practica.addEventListener('change', () => {
+      const prat = practica.value;
+      pract1Section.style.display = prat === 'pract1' ? 'block' : 'none';
+      resultado.textContent = '';
+    });
+
+    lenguaje.addEventListener('change', () => {
+      codigoJava.style.display = lenguaje.value === 'java' ? 'block' : 'none';
+    });
+
+    codigoJava.style.display = lenguaje.value === 'java' ? 'block' : 'none';
+
+    calcularBtn.addEventListener('click', () => {
+      const v = horaInput.value;
+      if (!v) { resultado.textContent = 'Ingrese una hora válida.'; return; }
+      const [hStr, mStr] = v.split(':');
+      let h = parseInt(hStr, 10);
+      let m = parseInt(mStr, 10);
+
+      const mirrored = computeMirror(h, m);
+      resultado.textContent = 'Hora reflejada: ' + mirrored;
+    });
+
+    function computeMirror(hour, minute) {
+      let h = hour % 12;
+      if (h === 0) h = 12;
+      const m = minute;
+
+      let mh, mm;
+      if (m === 0) {
+        mh = (12 - h) % 12;
+        if (mh === 0) mh = 12;
+        mm = 0;
+      } else {
+        mh = 11 - h;
+        while (mh <= 0) mh += 12;
+        mm = 60 - m;
+      }
+
+      return pad(mh) + ':' + pad(mm);
+    }
+
+    function pad(n){ return (n<10? '0':'') + n; }
+  </script>
+</body>
+</html>
